@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+        Permet d'afficher des notifications (obligatoire depuis Android 13 / API 33).
+        Sur les versions antérieures, cette permission est accordée automatiquement.
+        L'utilisateur peut la révoquer depuis les paramètres système.
+    -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+        Permission obligatoire depuis Android 9 (API 28) pour lancer
+        un Foreground Service. Sans elle, startForeground() lève une
+        ForegroundServiceStartNotAllowedException au runtime.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!--
+        Depuis Android 14 (API 34), chaque type de Foreground Service
+        nécessite sa propre permission déclarée explicitement.
+        dataSync couvre les services de synchronisation en arrière-plan.
+    -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ServiceChronometreJava">
+
+        <!-- Activité principale — point d'entrée de l'application -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+            Déclaration du Foreground Service.
+
+            foregroundServiceType="dataSync" : obligatoire depuis Android 14 (API 34),
+            indique au système le type de tâche effectuée en arrière-plan.
+
+            exported="false" : le service est privé — aucune autre application
+            ne peut le démarrer ou s'y connecter via un Intent explicite.
+        -->
+        <service
+            android:name=".ChronometreService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false" />
+
+    </application>
+
+</manifest>
